@@ -1,2 +1,6 @@
 [build]
 phpExtensions = ["gd"]
+
+[build.nixpacksPlan]
+phases.install.nixPkgs = ["nodejs-18_x"]
+phases.install.cmds = ["npm ci --omit=dev"]
