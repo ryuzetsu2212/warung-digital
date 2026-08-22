@@ -62,7 +62,6 @@ class StaffLogin extends Component
             // Generate session fingerprint for validation
             $fingerprint = hash('sha256', implode('|', [
                 request()->userAgent() ?? 'unknown',
-                request()->ip(),
                 request()->header('Accept-Language') ?? 'unknown'
             ]));
             

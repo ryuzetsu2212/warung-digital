@@ -58,6 +58,13 @@ class UnifiedLogin extends Component
             // Regenerate session
             request()->session()->regenerate();
 
+            // Generate session fingerprint for validation
+            $fingerprint = hash('sha256', implode('|', [
+                request()->userAgent() ?? 'unknown',
+                request()->header('Accept-Language') ?? 'unknown'
+            ]));
+            Session::put('staff_session_fingerprint', $fingerprint);
+
             // Redirect to staff dashboard
             return redirect()->route('staff.dapur');
         }

@@ -71,6 +71,13 @@ abstract class StaffDashboardBase extends Component
             Session::put('staff_role', $user ? $user->role : 'staff');
             Session::put('staff_login_time', now());
             Session::regenerate(); // Prevent session fixation
+
+            // Generate session fingerprint for validation
+            $fingerprint = hash('sha256', implode('|', [
+                request()->userAgent() ?? 'unknown',
+                request()->header('Accept-Language') ?? 'unknown'
+            ]));
+            Session::put('staff_session_fingerprint', $fingerprint);
             
             $this->isLoggedIn = true;
             $this->errorMessage = '';
