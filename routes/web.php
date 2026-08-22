@@ -68,7 +68,7 @@ Route::get('/reservasi-old', \App\Livewire\ReservationForm::class)->name('custom
 
 // Staff Login (hidden URL for security + IP whitelist protection)
 Route::get('/x8k3m9-staff-login', \App\Livewire\Auth\StaffLogin::class)
-    ->middleware('staff.ip.whitelist')
+    //->middleware('staff.ip.whitelist')
     ->name('staff.login');
 
 // Protected Staff Routes (all require authentication)
