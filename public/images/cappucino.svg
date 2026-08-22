@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="cup" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="70%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <linearGradient id="coffee" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="100%" stop-color="#291102"/>
+    </linearGradient>
+    <linearGradient id="foam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="50%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- Steam Animation Lines -->
+  <g stroke="#94a3b8" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.4">
+    <path d="M360,180 Q340,140 370,100 Q400,60 380,20"/>
+    <path d="M400,170 Q420,130 390,90 Q360,50 400,10"/>
+    <path d="M440,180 Q460,140 430,100 Q400,60 420,20"/>
+  </g>
+
+  <!-- Saucer -->
+  <g filter="url(#shadow)">
+    <ellipse cx="400" cy="450" rx="220" ry="30" fill="#cbd5e1"/>
+    <ellipse cx="400" cy="445" rx="210" ry="25" fill="#f8fafc"/>
+    <ellipse cx="400" cy="445" rx="150" ry="18" fill="#e2e8f0"/>
+  </g>
+
+  <!-- Cup Handle -->
+  <path d="M 520 280 C 590 280, 590 380, 520 380" fill="none" stroke="url(#cup)" stroke-width="28" stroke-linecap="round" filter="url(#shadow)"/>
+  <path d="M 520 280 C 580 280, 580 380, 520 380" fill="none" stroke="#cbd5e1" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Cup Body -->
+  <g filter="url(#shadow)">
+    <path d="M 260 250 L 300 430 C 305 450, 495 450, 500 430 L 540 250 Z" fill="url(#cup)"/>
+  </g>
+
+  <!-- Inner Coffee Liquid -->
+  <ellipse cx="400" cy="250" rx="140" ry="35" fill="url(#coffee)"/>
+
+  <!-- Latte Art Foam -->
+  <g transform="translate(400, 252)">
+    <ellipse cx="0" cy="0" rx="125" ry="30" fill="url(#foam)"/>
+    <!-- Heart / Rosetta Pattern inside Foam -->
+    <path d="M 0,-15 C 30,-25 60,0 0,20 C -60,0 -30,-25 0,-15 Z" fill="#b45309" opacity="0.85"/>
+    <path d="M 0,-10 C 15,-18 35,0 0,15 C -35,0 -15,-18 0,-10 Z" fill="#fffbeb" opacity="0.9"/>
+  </g>
+
+  <!-- Cup Rim Ellipse -->
+  <ellipse cx="400" cy="250" rx="140" ry="35" fill="none" stroke="#ffffff" stroke-width="4"/>
+
+  <!-- Label Text -->
+  <text x="400" y="535" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="800" fill="#fbbf24" text-anchor="middle" letter-spacing="2">CAPPUCINO</text>
+  <text x="400" y="565" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#94a3b8" text-anchor="middle">WARUNG DIGITAL</text>
+</svg>

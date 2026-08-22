@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#bg)"/>
+    <!-- Ayam Crispy -->
+    <path d="M 150 160 Q 180 130 220 140 T 260 180 T 200 230 T 140 200 Z" fill="#b45309" stroke="#78350f" stroke-width="4"/>
+    <!-- Sambal Matah / Cabai -->
+    <circle cx="180" cy="170" r="8" fill="#ef4444"/>
+    <circle cx="210" cy="160" r="7" fill="#22c55e"/>
+    <circle cx="200" cy="190" r="8" fill="#ef4444"/>
+    <circle cx="230" cy="185" r="7" fill="#22c55e"/>
+    <!-- Teks -->
+    <text x="50%" y="45" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="22" font-weight="bold" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.5))">🍗 Ayam Geprek</text>
+</svg>

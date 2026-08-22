@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#bg)"/>
+    <ellipse cx="200" cy="170" rx="110" ry="50" fill="#334155"/>
+    <ellipse cx="200" cy="170" rx="95" ry="40" fill="#1e1b4b"/>
+    <ellipse cx="200" cy="175" rx="85" ry="32" fill="#09090b"/>
+    <!-- Daging & Telur Asin -->
+    <circle cx="170" cy="175" r="14" fill="#78350f"/>
+    <circle cx="210" cy="180" r="16" fill="#451a03"/>
+    <ellipse cx="235" cy="165" rx="12" ry="9" fill="#fef08a"/>
+    <circle cx="235" cy="165" rx="6" ry="5" fill="#ca8a04"/>
+    <text x="50%" y="45" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="22" font-weight="bold">🍲 Nasi Rawon Daging Sapi</text>
+</svg>

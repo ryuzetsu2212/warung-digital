@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#bg)"/>
+    <ellipse cx="200" cy="170" rx="110" ry="50" fill="#334155"/>
+    <ellipse cx="200" cy="170" rx="95" ry="40" fill="#f1f5f9"/>
+    <ellipse cx="200" cy="175" rx="85" ry="32" fill="#fef08a"/>
+    <!-- Bakso Bulat -->
+    <circle cx="170" cy="170" r="15" fill="#713f12"/>
+    <circle cx="210" cy="165" r="16" fill="#713f12"/>
+    <circle cx="190" cy="190" r="14" fill="#713f12"/>
+    <text x="50%" y="45" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="22" font-weight="bold">🍲 Bakso Urat Sapi</text>
+</svg>

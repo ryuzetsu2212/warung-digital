@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#bg)"/>
+    <ellipse cx="200" cy="170" rx="110" ry="50" fill="#334155"/>
+    <ellipse cx="200" cy="170" rx="95" ry="40" fill="#fef08a"/>
+    <path d="M150 160 Q170 180 200 160 Q230 180 250 160" stroke="#d97706" stroke-width="8" fill="none"/>
+    <text x="50%" y="45" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="22" font-weight="bold">🍜 Indomie Goreng</text>
+</svg>

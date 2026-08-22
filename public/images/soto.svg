@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#bg)"/>
+    <ellipse cx="200" cy="170" rx="110" ry="50" fill="#334155"/>
+    <ellipse cx="200" cy="170" rx="95" ry="40" fill="#fef9c3"/>
+    <ellipse cx="200" cy="175" rx="85" ry="32" fill="#fde047"/>
+    <!-- Suwiran Ayam -->
+    <path d="M170 160 L180 180 M190 155 L200 175 M210 160 L220 180" stroke="#713f12" stroke-width="3"/>
+    <text x="50%" y="45" dominant-baseline="middle" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="22" font-weight="bold">🍲 Soto Ayam Lamongan</text>
+</svg>
