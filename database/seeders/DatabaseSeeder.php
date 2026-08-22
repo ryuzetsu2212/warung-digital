@@ -144,6 +144,15 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        $this->call(OrderSeeder::class);
+        $this->call([
+            AdminUserSeeder::class,
+            // Tambahkan seeder lainnya di bawah ini sesuai urutan yang kamu butuhkan:
+            OrderSeeder::class,
+            ReservationSeeder::class,
+            TodayOrdersSeeder::class,
+            ShiftOrdersSeeder::class,
+            YearOrdersSeeder::class,
+            // dan lain-lain...
+        ]);
     }
 }
