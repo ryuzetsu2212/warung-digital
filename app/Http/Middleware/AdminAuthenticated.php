@@ -51,7 +51,6 @@ class AdminAuthenticated
     {
         return hash('sha256', implode('|', [
             $request->userAgent() ?? 'unknown',
-            $request->ip(),
             $request->header('Accept-Language') ?? 'unknown'
         ]));
     }
