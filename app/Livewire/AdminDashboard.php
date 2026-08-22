@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Reservation;
 use App\Models\Product;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -43,6 +44,9 @@ class AdminDashboard extends Component
     public function mount()
     {
         $this->checkAuth();
+        
+        // Load manual override from database
+        $this->manualOverride = Setting::getValue('admin_manual_override', false);
         
         // Get active tab from URL query parameter, default to 'statistik'
         $this->activeTab = request()->query('tab', 'statistik');
@@ -574,5 +578,8 @@ class AdminDashboard extends Component
                 session()->flash('message', 'Warung dibuka secara manual. Semua QR meja diaktifkan.');
             }
         }
+        
+        // Store manual override in database for persistence across requests and instances
+        Setting::setValue('admin_manual_override', $this->manualOverride);
     }
 }
