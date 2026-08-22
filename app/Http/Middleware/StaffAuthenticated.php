@@ -53,7 +53,7 @@ class StaffAuthenticated
     {
         return hash('sha256', implode('|', [
             $request->userAgent() ?? 'unknown',
-            $request->ip(),
+            // $request->ip(), // IP removed to prevent logout on Railway proxy IP changes
             $request->header('Accept-Language') ?? 'unknown'
         ]));
     }
