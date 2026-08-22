@@ -50,9 +50,13 @@ class UnifiedLogin extends Component
             // Clear rate limiter on successful login
             RateLimiter::clear($key);
 
+            // Determine role based on identifier
+            $role = ($this->identifier === 'admin') ? 'admin' : 'staff';
+
             // Set staff session
             Session::put('staff_logged_in', true);
             Session::put('staff_username', $this->identifier);
+            Session::put('staff_role', $role);
             Session::put('user_type', 'staff');
 
             // Regenerate session
@@ -65,7 +69,10 @@ class UnifiedLogin extends Component
             ]));
             Session::put('staff_session_fingerprint', $fingerprint);
 
-            // Redirect to staff dashboard
+            // Redirect based on role
+            if ($role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
             return redirect()->route('staff.dapur');
         }
 
