@@ -46,7 +46,17 @@ class AdminDashboard extends Component
         $this->checkAuth();
         
         // Load manual override from database
-        $this->manualOverride = Setting::getValue('admin_manual_override', false);
+        $storedValue = Setting::getValue('admin_manual_override', null);
+        // Convert stored value back to correct type
+        if ($storedValue === null) {
+            $this->manualOverride = false;
+        } elseif ($storedValue === 'closed') {
+            $this->manualOverride = 'closed';
+        } elseif ($storedValue === '1' || $storedValue === 'true' || $storedValue === true) {
+            $this->manualOverride = true;
+        } else {
+            $this->manualOverride = false;
+        }
         
         // Get active tab from URL query parameter, default to 'statistik'
         $this->activeTab = request()->query('tab', 'statistik');
