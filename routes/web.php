@@ -5,11 +5,23 @@ use App\Livewire\CustomerMenu;
 use App\Livewire\OrderStatus;
 use App\Livewire\StaffDashboard;
 use App\Models\Table;
+use App\Models\Setting;
 
 Route::get('/', function () {
     $tables = Table::all();
     $currentHour = now()->hour;
-    $isOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+    $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+    $manualOverride = Setting::getValue('admin_manual_override', false);
+    
+    // Determine final status
+    if ($manualOverride === 'closed') {
+        $isOpen = false;
+    } elseif ($manualOverride === true || $manualOverride === '1' || $manualOverride === 'true') {
+        $isOpen = true;
+    } else {
+        $isOpen = $autoIsOpen;
+    }
+    
     return view('welcome', compact('tables', 'isOpen'));
 })->name('customer.welcome');
 
