@@ -25,18 +25,30 @@
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-400 flex items-center justify-center shadow-lg shadow-amber-500/20 text-2xl">
                     🍽️
                 </div>
-                <div>
-                    <span class="font-extrabold text-xl text-white tracking-tight">Warung <span class="text-amber-500">Digital</span></span>
-                    @if($isOpen)
-                        <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            Buka
-                        </span>
-                    @else
-                        <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
-                            Tutup
-                        </span>
-                    @endif
-                </div>
+                 <div>
+                     <span class="font-extrabold text-xl text-white tracking-tight">Warung <span class="text-amber-500">Digital</span></span>
+                     @php
+                         $currentHour = now()->hour;
+                         $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+                         $manualOverride = \App\Models\Setting::getValue('admin_manual_override', false);
+                         if ($manualOverride === 'closed') {
+                             $isOpen = false;
+                         } elseif ($manualOverride === true || $manualOverride === '1' || $manualOverride === 'true') {
+                             $isOpen = true;
+                         } else {
+                             $isOpen = $autoIsOpen;
+                         }
+                     @endphp
+                     @if($isOpen)
+                         <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                             Buka
+                         </span>
+                     @else
+                         <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+                             Tutup
+                         </span>
+                     @endif
+                 </div>
             </a>
 
             {{-- Desktop Menu --}}
