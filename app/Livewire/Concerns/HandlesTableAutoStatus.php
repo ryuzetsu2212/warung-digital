@@ -61,10 +61,6 @@ trait HandlesTableAutoStatus
                 'active_session_token' => null,
             ]);
 
-        if (property_exists($this, 'successMessage')) {
-            $this->successMessage = $isOpen
-                ? 'QR Code diaktifkan untuk semua meja (Jam Operasional: Shift Siang 07:00-17:00, Shift Malam 19:00-23:00).'
-                : 'QR Code dinonaktifkan untuk semua meja (Diluar Jam Operasional).';
-        }
+        // Notification message removed - no successMessage set
     }
 }
