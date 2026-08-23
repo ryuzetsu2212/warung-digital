@@ -7,6 +7,7 @@ use App\Models\Table;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 
 class CustomerMenu extends Component
@@ -25,7 +26,22 @@ class CustomerMenu extends Component
     {
         $currentHour = now()->hour;
         // Shift Siang: 07:00 - 17:00 atau Shift Malam: 19:00 - 23:00
-        $isOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+        $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+        
+        // Check manual override from database
+        $manualOverride = Setting::getValue('admin_manual_override', false);
+        
+        // Determine final status
+        if ($manualOverride === 'closed') {
+            // Force closed by admin
+            $isOpen = false;
+        } elseif ($manualOverride === true || $manualOverride === '1' || $manualOverride === 'true') {
+            // Force open by admin
+            $isOpen = true;
+        } else {
+            // Follow automatic schedule
+            $isOpen = $autoIsOpen;
+        }
 
         $this->code = $code;
         

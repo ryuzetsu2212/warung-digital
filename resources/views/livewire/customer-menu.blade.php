@@ -16,7 +16,15 @@
             <div class="flex items-center gap-3">
                 @php
                     $currentHour = now()->hour;
-                    $isOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+                    $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
+                    $manualOverride = \App\Models\Setting::getValue('admin_manual_override', false);
+                    if ($manualOverride === 'closed') {
+                        $isOpen = false;
+                    } elseif ($manualOverride === true || $manualOverride === '1' || $manualOverride === 'true') {
+                        $isOpen = true;
+                    } else {
+                        $isOpen = $autoIsOpen;
+                    }
                 @endphp
                 <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs">
                     <span class="w-1.5 h-1.5 rounded-full {{ $isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-red-500' }}"></span>
