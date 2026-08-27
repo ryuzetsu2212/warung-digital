@@ -40,9 +40,10 @@ class SecurityHeaders
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
             "font-src 'self' https://fonts.gstatic.com data:",
-            "img-src 'self' data: https: blob:",
-            "connect-src 'self' ws: wss:",
+            "img-src 'self' data:",
+            "connect-src 'self'",
             "frame-ancestors 'self'",
+            "form-action 'self'",
         ]);
         
         // Only apply CSP in production to avoid breaking development
@@ -61,6 +62,11 @@ class SecurityHeaders
             'payment=()',
         ]);
         $response->headers->set('Permissions-Policy', $permissions);
+
+        // ✅ Fix Big Redirect: clear response body for redirects
+        if ($response->isRedirect()) {
+            $response->setContent(null);
+        }
 
         return $response;
     }
