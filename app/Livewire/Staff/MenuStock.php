@@ -32,7 +32,7 @@ class MenuStock extends StaffDashboardBase
         'kategori' => 'required|string|max:100',
         'harga' => 'required|numeric|min:0',
         'image_url' => 'nullable|string',
-        'image_file' => 'nullable|image|max:5120',
+        'image_file' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:10240',
         'is_available' => 'boolean',
     ];
 
@@ -94,8 +94,13 @@ class MenuStock extends StaffDashboardBase
 
             // Handle image upload
             if ($this->image_file) {
-                $path = $this->image_file->store('menu-images', 'public');
-                $data['image_url'] = Storage::url($path);
+                try {
+                    $path = $this->image_file->store('menu-images', 'public');
+                    $data['image_url'] = Storage::url($path);
+                } catch (\Exception $e) {
+                    $this->errorMessage = 'Gagal upload gambar: ' . $e->getMessage();
+                    return;
+                }
             } elseif ($this->image_url) {
                 $data['image_url'] = $this->image_url;
             }
