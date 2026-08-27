@@ -32,7 +32,7 @@ class MenuStock extends StaffDashboardBase
         'kategori' => 'required|string|max:100',
         'harga' => 'required|numeric|min:0',
         'image_url' => 'nullable|string',
-        'image_file' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp|max:10240',
+        'image_file' => 'nullable|image|max:20480',
         'is_available' => 'boolean',
     ];
 
@@ -92,11 +92,12 @@ class MenuStock extends StaffDashboardBase
                 'is_available' => $this->is_available,
             ];
 
-            // Handle image upload
+            // Handle image upload - store as base64 in DB (Railway ephemeral storage)
             if ($this->image_file) {
                 try {
-                    $path = $this->image_file->store('menu-images', 'public');
-                    $data['image_url'] = Storage::url($path);
+                    $contents = file_get_contents($this->image_file->getRealPath());
+                    $mime = $this->image_file->getMimeType();
+                    $data['image_url'] = 'data:' . $mime . ';base64,' . base64_encode($contents);
                 } catch (\Exception $e) {
                     $this->errorMessage = 'Gagal upload gambar: ' . $e->getMessage();
                     return;
