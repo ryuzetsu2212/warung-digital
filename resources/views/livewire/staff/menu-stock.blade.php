@@ -238,14 +238,7 @@
                         @error('harga') <span class="text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-slate-300 mb-2">URL Gambar (Opsional)</label>
-                        <input type="url" wire:model="image_url"
-                               class="w-full bg-slate-950/60 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition"
-                               placeholder="https://example.com/gambar.jpg">
-                        <p class="text-xs text-slate-400 mt-1">Atau upload gambar dari komputer Anda</p>
-                        @error('image_url') <span class="text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
-                    </div>
+
 
                     <div>
                         <label class="block text-sm font-bold text-slate-300 mb-2">Upload Gambar (Opsional)</label>
