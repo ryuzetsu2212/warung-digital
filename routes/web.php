@@ -25,6 +25,15 @@ Route::get('/', function () {
     return view('welcome', compact('tables', 'isOpen'));
 })->name('customer.welcome');
 
+// Serve storage images directly (bypass symlink)
+Route::get('/storage/{path}', function ($path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->file($fullPath);
+})->where('path', '.*');
+
 // Halaman Pembeli berdasarkan Short Code Meja (prioritas utama)
 Route::get('/meja/{code}', CustomerMenu::class)->name('customer.menu');
 
