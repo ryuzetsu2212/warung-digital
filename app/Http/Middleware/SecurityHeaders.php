@@ -46,8 +46,8 @@ class SecurityHeaders
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
             "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:",
-            "img-src 'self' data: https: blob:",
-            "connect-src 'self' ws: wss:",
+            "img-src 'self' data: blob: https://images.unsplash.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.bunny.net",
+            "connect-src 'self' https://static.cloudflareinsights.com https://cloudflareinsights.com ws: wss:",
             "frame-ancestors 'self'",
         ]);
         

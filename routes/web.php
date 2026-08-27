@@ -57,9 +57,7 @@ Route::get('/login', \App\Livewire\Auth\UnifiedLogin::class)->name('login');
 Route::get('/register', \App\Livewire\Auth\CustomerRegister::class)->name('customer.register');
 
 // Keep old customer login route for backward compatibility (redirects to unified)
-Route::get('/customer/login', function() {
-    return redirect()->route('login');
-})->name('customer.login');
+Route::redirect('/customer/login', '/login', 301)->name('customer.login');
 
 // Logout Route
 Route::post('/logout', function() {

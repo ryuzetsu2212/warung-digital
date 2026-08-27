@@ -1,4 +1,6 @@
 <?php
+if (function_exists('header_remove')) { @header_remove('X-Powered-By'); }
+@ini_set('expose_php', 'off');
 
 use Illuminate\Http\Request;
 
