@@ -132,7 +132,7 @@
                 <p class="text-xs text-slate-400 text-center mt-3">Silahkan screenshot atau refresh halaman web apabila download gagal</p>
 
                 @once
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         const downloadBtn = document.getElementById('download-receipt-btn');

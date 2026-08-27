@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Block access to hidden files and directories (dotfiles like .htaccess, .env, .git)
+    RewriteRule (^|/)\.(?!well-known) - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -24,6 +27,12 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-<Files "robots.txt">
+<IfModule mod_headers.c>
+    # Security headers for all responses including static files
     Header set X-Content-Type-Options "nosniff"
-</Files>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+    Header unset X-Powered-By
+</IfModule>
+

@@ -19,6 +19,9 @@ class SecurityHeaders
 
         // ✅ Remove server information leakage
         $response->headers->remove('X-Powered-By');
+        if (function_exists('header_remove')) {
+            @header_remove('X-Powered-By');
+        }
         
         // ✅ Prevent XSS attacks
         $response->headers->set('X-Content-Type-Options', 'nosniff');
@@ -37,9 +40,12 @@ class SecurityHeaders
         // ✅ Content Security Policy (relaxed for Livewire & Tailwind)
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
-            "font-src 'self' https://fonts.gstatic.com data:",
+            "base-uri 'self'",
+            "object-src 'none'",
+            "form-action 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com",
+            "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:",
             "img-src 'self' data: https: blob:",
             "connect-src 'self' ws: wss:",
             "frame-ancestors 'self'",
