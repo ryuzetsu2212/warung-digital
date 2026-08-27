@@ -31,7 +31,7 @@ class MenuStock extends StaffDashboardBase
         'nama' => 'required|string|max:255',
         'kategori' => 'required|string|max:100',
         'harga' => 'required|numeric|min:0',
-        'image_url' => 'nullable|url',
+        'image_url' => 'nullable|string',
         'image_file' => 'nullable|image|max:2048',
         'is_available' => 'boolean',
     ];
