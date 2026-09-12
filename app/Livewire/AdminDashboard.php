@@ -206,7 +206,7 @@ class AdminDashboard extends Component
         
         // Meja Tersedia
         $totalTables = \App\Models\Table::count();
-        $occupiedTables = \App\Models\Table::where('status', 'terisi')->count();
+        $occupiedTables = \App\Models\Table::where('status_meja', 'terisi')->count();
         $availableTables = $totalTables - $occupiedTables;
         
         // Waktu Operasional - Jam operasional warung: 07:00-17:00 dan 19:00-23:00
