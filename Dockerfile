@@ -13,7 +13,16 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
 
+COPY package.json package-lock.json ./
+RUN apt-get update && apt-get install -y --no-install-recommends nodejs npm \
+    && npm ci \
+    && rm -rf /root/.npm /var/lib/apt/lists/*
+
 COPY . .
+
+# public/build is gitignored, so compile the Vite manifest in the image.
+RUN npm run build && rm -rf node_modules /root/.npm
+
 RUN composer dump-autoload --optimize \
     && chown -R www-data:www-data storage bootstrap/cache
 
