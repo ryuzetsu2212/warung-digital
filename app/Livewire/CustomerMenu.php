@@ -27,9 +27,14 @@ class CustomerMenu extends Component
         $currentHour = now()->hour;
         // Shift Siang: 07:00 - 17:00 atau Shift Malam: 19:00 - 23:00
         $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
-        
-        // Check manual override from database
-        $manualOverride = Setting::getValue('admin_manual_override', false);
+
+        // Check manual override from database (never let settings errors break the page)
+        $manualOverride = false;
+        try {
+            $manualOverride = Setting::getValue('admin_manual_override', false);
+        } catch (\Throwable $e) {
+            report($e);
+        }
         
         // Determine final status
         if ($manualOverride === 'closed') {
@@ -46,7 +51,12 @@ class CustomerMenu extends Component
         $this->code = $code;
         
         // QR currently uses the table UUID. Avoid querying the optional/nonexistent short_code column.
-        $this->table = Table::where('uuid', $code)->firstOrFail();
+        $this->table = Table::where('uuid', $code)->first();
+
+        if (!$this->table) {
+            $this->serviceClosed = true;
+            return;
+        }
 
         if (!$isOpen) {
             $this->serviceClosed = true;
