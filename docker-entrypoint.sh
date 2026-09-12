@@ -15,6 +15,12 @@ if [ -z "$KEY_B64" ]; then
 fi
 export APP_KEY="base64:${KEY_B64}"
 
+# Render Free + Supabase pooler: keep web sessions/cache local to avoid
+# prepared-statement/session-table issues during authentication.
+export SESSION_DRIVER="file"
+export CACHE_STORE="file"
+export QUEUE_CONNECTION="sync"
+
 # Never reuse a config cache created with the old/invalid key.
 php artisan config:clear
 php artisan migrate --force
