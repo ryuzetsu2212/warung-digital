@@ -64,6 +64,9 @@
     @endif
 
     <main class="max-w-7xl mx-auto px-4 py-6">
+        @if($debugError)
+            <div class="bg-red-900/60 border border-red-500/40 rounded-2xl p-6 text-left text-red-200 text-xs font-mono whitespace-pre-wrap">{{ $debugError }}</div>
+        @endif
         @if($serviceClosed)
             <div class="bg-slate-900/60 border border-amber-500/30 rounded-3xl p-10 text-center shadow-2xl">
                 <div class="text-6xl mb-4">🌙</div>

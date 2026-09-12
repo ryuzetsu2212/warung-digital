@@ -22,8 +22,11 @@ class CustomerMenu extends Component
     public $sessionExpired = false;
     public $serviceClosed = false;
 
+    public $debugError = '';
+
     public function mount($code)
     {
+        try {
         $currentHour = now()->hour;
         // Shift Siang: 07:00 - 17:00 atau Shift Malam: 19:00 - 23:00
         $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
@@ -91,6 +94,10 @@ class CustomerMenu extends Component
                 'qr_available' => false,
             ]);
             session([$sessionKey => $token]);
+        }
+        } catch (\Throwable $e) {
+            report($e);
+            $this->debugError = get_class($e) . ': ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine();
         }
     }
 
