@@ -43,5 +43,9 @@ class AiMenuSeeder extends Seeder
                 ]
             );
         }
+
+        // Hide old demo products so their old external image links are not shown.
+        Product::whereNotIn('nama', collect($items)->pluck('nama')->all())
+            ->update(['is_available' => false, 'image_url' => null]);
     }
 }
