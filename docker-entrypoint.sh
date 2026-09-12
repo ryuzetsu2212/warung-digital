@@ -19,5 +19,13 @@ export APP_KEY="base64:${KEY_B64}"
 php artisan config:clear
 php artisan migrate --force
 php artisan db:seed --class=AdminUserSeeder --force
+
+# Populate the menu and initial application data once on a fresh database.
+# DatabaseSeeder also creates demo orders/reservations; do not rerun it when
+# products already exist, otherwise every container restart would duplicate data.
+if ! php artisan tinker --execute="exit(DB::table('products')->exists() ? 0 : 1);" >/dev/null 2>&1; then
+    php artisan db:seed --class=DatabaseSeeder --force
+fi
+
 php artisan config:cache
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-8080}"
