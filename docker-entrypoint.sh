@@ -18,5 +18,6 @@ export APP_KEY="base64:${KEY_B64}"
 # Never reuse a config cache created with the old/invalid key.
 php artisan config:clear
 php artisan migrate --force
+php artisan db:seed --class=AdminUserSeeder --force
 php artisan config:cache
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-8080}"

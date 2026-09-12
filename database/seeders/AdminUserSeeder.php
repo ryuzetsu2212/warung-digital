@@ -14,26 +14,28 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Admin account
-        User::create([
-            'name' => 'Administrator',
-            'username' => 'admin',
-            'email' => null,
-            'phone' => '081234567890',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        // Create/update Admin account for fresh deployments
+        User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'name' => 'Administrator',
+                'email' => null,
+                'phone' => '081234567890',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+            ]
+        );
 
-        // Create Staff account if not exists
-        if (!User::where('role', 'staff')->where('username', 'staff')->exists()) {
-            User::create([
+        // Create/update Staff account for fresh deployments
+        User::updateOrCreate(
+            ['username' => 'staff'],
+            [
                 'name' => 'Staff Warung',
-                'username' => 'staff',
                 'email' => null,
                 'phone' => '081234567891',
                 'password' => Hash::make('staff123'),
                 'role' => 'staff',
-            ]);
-        }
+            ]
+        );
     }
 }
