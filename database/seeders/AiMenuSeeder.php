@@ -53,8 +53,9 @@ class AiMenuSeeder extends Seeder
         // Remove extra legacy rows when safe; preserve rows referenced by history.
         $extras = $existing->slice(count($items));
         foreach ($extras as $product) {
-            $used = \Illuminate\Support\Facades\DB::table('order_items')
-                ->where('product_id', $product->id)->exists();
+            $used = \Illuminate\Support\Facades\Schema::hasTable('order_items')
+                && \Illuminate\Support\Facades\DB::table('order_items')
+                    ->where('product_id', $product->id)->exists();
             if ($used) {
                 $product->update(['is_available' => false, 'image_url' => null]);
             } else {
