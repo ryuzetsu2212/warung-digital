@@ -20,11 +20,13 @@ php artisan config:clear
 php artisan migrate --force
 php artisan db:seed --class=AdminUserSeeder --force
 
-# Populate the menu and initial application data once on a fresh database.
-# DatabaseSeeder also creates demo orders/reservations; do not rerun it when
-# products already exist, otherwise every container restart would duplicate data.
-if ! php artisan tinker --execute="exit(DB::table('products')->exists() ? 0 : 1);" >/dev/null 2>&1; then
+# Seed the initial menu only when products is empty.
+PRODUCT_COUNT="$(php artisan tinker --execute="echo \\App\\Models\\Product::count();" 2>/dev/null | tr -d '[:space:]')"
+if [ "$PRODUCT_COUNT" = "0" ] || [ -z "$PRODUCT_COUNT" ]; then
+    echo "Products empty; seeding initial menu data..."
     php artisan db:seed --class=DatabaseSeeder --force
+else
+    echo "Products already seeded ($PRODUCT_COUNT); skipping demo data."
 fi
 
 php artisan config:cache
