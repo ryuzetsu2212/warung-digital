@@ -32,19 +32,34 @@ class AiMenuSeeder extends Seeder
             ['nama' => 'Tempe Mendoan', 'kategori' => 'snack', 'harga' => 12000, 'file' => 'tempe_mendoan_3.webp'],
         ];
 
-        foreach ($items as $item) {
-            Product::updateOrCreate(
-                ['nama' => $item['nama']],
-                [
-                    'kategori' => $item['kategori'],
-                    'harga' => $item['harga'],
-                    'image_url' => $base . $item['file'],
-                    'is_available' => true,
-                ]
-            );
+        // Replace existing product rows so old demo products are not shown.
+        // Reusing rows preserves foreign keys from historical order_items.
+        $existing = Product::orderBy('id')->get();
+        foreach ($items as $index => $item) {
+            $data = [
+                'nama' => $item['nama'],
+                'kategori' => $item['kategori'],
+                'harga' => $item['harga'],
+                'image_url' => $base . $item['file'],
+                'is_available' => true,
+            ];
+            if (isset($existing[$index])) {
+                $existing[$index]->update($data);
+            } else {
+                Product::create($data);
+            }
         }
 
-        // Remove legacy/demo products entirely so only AI menu remains.
-        Product::whereNotIn('nama', collect($items)->pluck('nama')->all())->delete();
+        // Remove extra legacy rows when safe; preserve rows referenced by history.
+        $extras = $existing->slice(count($items));
+        foreach ($extras as $product) {
+            $used = \Illuminate\Support\Facades\DB::table('order_items')
+                ->where('product_id', $product->id)->exists();
+            if ($used) {
+                $product->update(['is_available' => false, 'image_url' => null]);
+            } else {
+                $product->delete();
+            }
+        }
     }
 }
