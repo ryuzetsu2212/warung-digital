@@ -20,9 +20,9 @@ class DemoCustomerReservationSeeder extends Seeder
         }
 
         $customers = [
-            ['name' => 'Pelanggan Demo Satu', 'phone' => '081200000001', 'email' => 'demo1@example.test'],
-            ['name' => 'Pelanggan Demo Dua', 'phone' => '081200000002', 'email' => 'demo2@example.test'],
-            ['name' => 'Pelanggan Demo Tiga', 'phone' => '081200000003', 'email' => 'demo3@example.test'],
+            ['name' => 'Budi Santoso', 'phone' => '081200000001', 'email' => 'budi.santoso@gmail.com', 'password' => 'budi123'],
+            ['name' => 'Siti Nurhaliza', 'phone' => '081200000002', 'email' => 'siti.nurhaliza@gmail.com', 'password' => 'siti123'],
+            ['name' => 'Ahmad Dahlan', 'phone' => '081200000003', 'email' => 'ahmad.dahlan@gmail.com', 'password' => 'ahmad123'],
         ];
 
         foreach ($customers as $index => $data) {
@@ -31,7 +31,7 @@ class DemoCustomerReservationSeeder extends Seeder
                 [
                     'name' => $data['name'],
                     'email' => $data['email'],
-                    'password' => Hash::make('Demo12345'),
+                    'password' => Hash::make($data['password']),
                     'role' => 'customer',
                 ]
             );
