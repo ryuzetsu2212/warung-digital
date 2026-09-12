@@ -44,8 +44,7 @@ class AiMenuSeeder extends Seeder
             );
         }
 
-        // Hide old demo products so their old external image links are not shown.
-        Product::whereNotIn('nama', collect($items)->pluck('nama')->all())
-            ->update(['is_available' => false, 'image_url' => null]);
+        // Remove legacy/demo products entirely so only AI menu remains.
+        Product::whereNotIn('nama', collect($items)->pluck('nama')->all())->delete();
     }
 }
