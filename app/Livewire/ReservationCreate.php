@@ -122,7 +122,7 @@ class ReservationCreate extends Component
 
     public function loadProducts()
     {
-        $query = Product::where('is_available', true);
+        $query = Product::available();
         if ($this->search) {
             $query->where('nama', 'like', '%' . $this->search . '%');
         }

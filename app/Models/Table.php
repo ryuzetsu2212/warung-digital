@@ -11,6 +11,11 @@ class Table extends Model
 
     protected $fillable = ['nomor_meja', 'uuid', 'short_code', 'status_meja', 'active_session_token', 'qr_available'];
 
+    public function scopeAvailable($query)
+    {
+        return $query->whereRaw('"qr_available" IS TRUE');
+    }
+
     /**
      * Generate a unique short code using Base62 encoding
      */

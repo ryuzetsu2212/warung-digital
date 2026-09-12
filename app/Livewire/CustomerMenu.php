@@ -22,8 +22,6 @@ class CustomerMenu extends Component
     public $sessionExpired = false;
     public $serviceClosed = false;
 
-    public $debugError = '';
-
     public function mount($code)
     {
         try {
@@ -97,7 +95,6 @@ class CustomerMenu extends Component
         }
         } catch (\Throwable $e) {
             report($e);
-            $this->debugError = get_class($e) . ': ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine();
         }
     }
 
@@ -114,7 +111,7 @@ class CustomerMenu extends Component
         }
 
         $product = Product::where('id', $productId)
-            ->where('is_available', true)
+            ->available()
             ->first();
 
         if (!$product) {
@@ -212,7 +209,7 @@ class CustomerMenu extends Component
 
             // Verify product still exists and available
             $product = Product::where('id', $productId)
-                ->where('is_available', true)
+                ->available()
                 ->first();
 
             if (!$product) {
@@ -268,7 +265,7 @@ class CustomerMenu extends Component
 
     public function render()
     {
-        $query = Product::query()->where('is_available', true);
+        $query = Product::query()->available();
 
         if (!empty($this->search)) {
             $query->where('nama', 'like', '%' . $this->search . '%');

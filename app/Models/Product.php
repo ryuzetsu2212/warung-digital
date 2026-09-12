@@ -11,6 +11,15 @@ class Product extends Model
 
     protected $fillable = ['nama', 'kategori', 'harga', 'image_url', 'is_available'];
 
+    protected $casts = [
+        'is_available' => 'boolean',
+    ];
+
+    public function scopeAvailable($query)
+    {
+        return $query->whereRaw('"is_available" IS TRUE');
+    }
+
     // Accessors for consistency with views
     public function getNameAttribute()
     {
