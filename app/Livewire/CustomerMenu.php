@@ -45,10 +45,8 @@ class CustomerMenu extends Component
 
         $this->code = $code;
         
-        // Try to find table by short_code first, fallback to uuid for backward compatibility
-        $this->table = Table::where('short_code', $code)
-            ->orWhere('uuid', $code)
-            ->firstOrFail();
+        // QR currently uses the table UUID. Avoid querying the optional/nonexistent short_code column.
+        $this->table = Table::where('uuid', $code)->firstOrFail();
 
         if (!$isOpen) {
             $this->serviceClosed = true;
