@@ -17,7 +17,9 @@ COPY . .
 RUN composer dump-autoload --optimize \
     && chown -R www-data:www-data storage bootstrap/cache
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 ENV PORT=8080
 
-# ponytail: artisan serve cukup utk free tier; ganti ke octane/frankenphp saat butuh concurrency
-CMD php artisan migrate --force && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=$PORT
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
