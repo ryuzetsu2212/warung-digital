@@ -21,6 +21,16 @@ trait HandlesTableAutoStatus
      */
     protected function checkAutoTableStatus(): void
     {
+        // Never let an operational-status refresh break staff pages.
+        try {
+            $this->runAutoTableStatus();
+        } catch (\Throwable $e) {
+            report($e);
+        }
+    }
+
+    protected function runAutoTableStatus(): void
+    {
         $currentHour = now()->hour;
         
         // Shift Siang: 07:00 - 17:00 atau Shift Malam: 19:00 - 23:00
