@@ -33,8 +33,8 @@
                 </div>
                 <div class="flex-1">
                     <p class="text-sm text-green-300/80 mb-1">Butuh bantuan? Hubungi staff kami</p>
-                    <a href="tel:082285011556" class="text-lg font-bold text-green-400 hover:text-green-300 transition-colors">
-                        082285011556 (WA)
+                    <a href="tel:083173536612" class="text-lg font-bold text-green-400 hover:text-green-300 transition-colors">
+                        083173536612 (WA)
                     </a>
                 </div>
             </div>
