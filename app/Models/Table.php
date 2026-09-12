@@ -11,6 +11,15 @@ class Table extends Model
 
     protected $fillable = ['nomor_meja', 'uuid', 'short_code', 'status_meja', 'active_session_token', 'qr_available'];
 
+    protected $casts = [
+        'qr_available' => 'boolean',
+    ];
+
+    public function setQrAvailableAttribute($value): void
+    {
+        $this->attributes['qr_available'] = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? (bool) $value;
+    }
+
     public function scopeAvailable($query)
     {
         return $query->whereRaw('"qr_available" IS TRUE');

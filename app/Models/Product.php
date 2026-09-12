@@ -15,6 +15,11 @@ class Product extends Model
         'is_available' => 'boolean',
     ];
 
+    public function setIsAvailableAttribute($value): void
+    {
+        $this->attributes['is_available'] = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? (bool) $value;
+    }
+
     public function scopeAvailable($query)
     {
         return $query->whereRaw('"is_available" IS TRUE');

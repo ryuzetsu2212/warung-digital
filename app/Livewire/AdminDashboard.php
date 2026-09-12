@@ -558,7 +558,7 @@ class AdminDashboard extends Component
             $this->manualOverride = true;
             // Aktifkan semua QR meja dan ubah status jadi tersedia
             \App\Models\Table::query()->update([
-                'qr_available' => 1,
+                'qr_available' => true,
                 'status_meja' => 'tersedia'
             ]);
             session()->flash('message', 'Warung dibuka secara manual. Semua QR meja diaktifkan.');
@@ -573,7 +573,7 @@ class AdminDashboard extends Component
                 $this->manualOverride = 'closed';
                 // Nonaktifkan semua QR meja dan ubah status jadi tertutup
                 \App\Models\Table::query()->update([
-                    'qr_available' => 0,
+                    'qr_available' => false,
                     'status_meja' => 'tertutup'
                 ]);
                 session()->flash('message', 'Warung ditutup secara manual. Semua QR meja dinonaktifkan.');
@@ -582,7 +582,7 @@ class AdminDashboard extends Component
                 $this->manualOverride = true;
                 // Aktifkan semua QR meja dan ubah status jadi tersedia
                 \App\Models\Table::query()->update([
-                    'qr_available' => 1,
+                    'qr_available' => true,
                     'status_meja' => 'tersedia'
                 ]);
                 session()->flash('message', 'Warung dibuka secara manual. Semua QR meja diaktifkan.');
