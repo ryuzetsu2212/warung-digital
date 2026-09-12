@@ -20,9 +20,9 @@ class DemoCustomerReservationSeeder extends Seeder
         }
 
         $customers = [
-            ['name' => 'Budi Santoso', 'phone' => '081200000001', 'email' => 'budi.santoso@gmail.com', 'password' => 'budi123'],
-            ['name' => 'Siti Nurhaliza', 'phone' => '081200000002', 'email' => 'siti.nurhaliza@gmail.com', 'password' => 'siti123'],
-            ['name' => 'Ahmad Dahlan', 'phone' => '081200000003', 'email' => 'ahmad.dahlan@gmail.com', 'password' => 'ahmad123'],
+            ['name' => 'Budi', 'phone' => '081200000001', 'email' => 'budi@gmail.com', 'password' => 'budi123'],
+            ['name' => 'Siti', 'phone' => '081200000002', 'email' => 'siti@gmail.com', 'password' => 'siti123'],
+            ['name' => 'Ahmad', 'phone' => '081200000003', 'email' => 'ahmad@gmail.com', 'password' => 'ahmad123'],
         ];
 
         foreach ($customers as $index => $data) {
