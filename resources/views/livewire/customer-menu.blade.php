@@ -10,14 +10,19 @@
                 </div>
                 <div>
                     <h1 class="text-base font-black text-white leading-tight tracking-tight">Warung Digital</h1>
-                    <p class="text-xs text-slate-500 leading-tight">Meja <span class="font-extrabold text-amber-400">{{ $table->nomor_meja }}</span></p>
+                    <p class="text-xs text-slate-500 leading-tight">Meja <span class="font-extrabold text-amber-400">{{ $table->nomor_meja ?? '-' }}</span></p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
                 @php
                     $currentHour = now()->hour;
                     $autoIsOpen = ($currentHour >= 7 && $currentHour < 17) || ($currentHour >= 19 && $currentHour < 23);
-                    $manualOverride = \App\Models\Setting::getValue('admin_manual_override', false);
+                    $manualOverride = false;
+                    try {
+                        $manualOverride = \App\Models\Setting::getValue('admin_manual_override', false);
+                    } catch (\Throwable $e) {
+                        $manualOverride = false;
+                    }
                     if ($manualOverride === 'closed') {
                         $isOpen = false;
                     } elseif ($manualOverride === true || $manualOverride === '1' || $manualOverride === 'true') {

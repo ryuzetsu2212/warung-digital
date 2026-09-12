@@ -51,7 +51,17 @@ class CustomerMenu extends Component
         $this->code = $code;
         
         // QR currently uses the table UUID. Avoid querying the optional/nonexistent short_code column.
-        $this->table = Table::where('uuid', $code)->first();
+        // QR can encode either the short code (preferred) or the table UUID.
+        // Resolve both so a scanned link never crashes the page.
+        $this->table = null;
+        try {
+            $this->table = Table::where('short_code', $code)->first();
+        } catch (\Throwable $e) {
+            report($e);
+        }
+        if (!$this->table) {
+            $this->table = Table::where('uuid', $code)->first();
+        }
 
         if (!$this->table) {
             $this->serviceClosed = true;
