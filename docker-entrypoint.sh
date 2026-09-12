@@ -36,8 +36,9 @@ else
     echo "Products already seeded ($PRODUCT_COUNT); skipping demo data."
 fi
 
-php artisan db:seed --class=AiMenuSeeder --force
-php artisan db:seed --class=DemoCustomerReservationSeeder --force
-php artisan db:seed --class=DemoOrderSeeder --force
+# Seed demo data safely; do not abort container startup if pooler drops statement
+php artisan db:seed --class=AiMenuSeeder --force || true
+php artisan db:seed --class=DemoCustomerReservationSeeder --force || true
+php artisan db:seed --class=DemoOrderSeeder --force || true
 php artisan config:cache
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-8080}"
