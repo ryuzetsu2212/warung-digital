@@ -31,7 +31,7 @@ class StaffDashboard extends StaffDashboardBase
         $allProducts=Product::all();
         $makananItems=OrderItem::with(['order.table','product'])->where('kategori_item','makanan')->whereNotIn('status_item',['selesai','dibatalkan'])->orderBy('created_at')->get();
         $minumanItems=OrderItem::with(['order.table','product'])->where('kategori_item','minuman')->whereNotIn('status_item',['selesai','dibatalkan'])->orderBy('created_at')->get();
-        $tables=Table::all();
+        $tables=Table::orderByRaw('CAST(nomor_meja AS INTEGER) ASC')->get();
         $query=Order::with(['table','orderItems.product'])->where('status','!=','dibatalkan')->latest(); $this->applyFilters($query); $recentOrders=$query->limit(20)->get();
         $completed=Order::where('status','selesai'); $this->applyFilters($completed); $completedTodayCount=$completed->count();
         $paid=Order::with('orderItems.product')->where('status','selesai')->where('status_pembayaran','lunas'); $this->applyFilters($paid); $revenueToday=$paid->get()->sum(fn($o)=>$o->total_harga);

@@ -58,7 +58,7 @@ class TableQr extends StaffDashboardBase
         $revenueToday = 0;
 
         if ($this->isLoggedIn) {
-            $tables = Table::all();
+            $tables = Table::orderByRaw('CAST(nomor_meja AS INTEGER) ASC')->get();
 
             $completedTodayCount = Order::where('status', 'selesai')
                 ->whereDate('created_at', today())
