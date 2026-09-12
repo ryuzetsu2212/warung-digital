@@ -91,7 +91,6 @@ class CustomerMenu extends Component
             $this->table->update([
                 'status_meja' => 'terisi',
                 'active_session_token' => $token,
-                'qr_available' => false,
             ]);
             session([$sessionKey => $token]);
         }
