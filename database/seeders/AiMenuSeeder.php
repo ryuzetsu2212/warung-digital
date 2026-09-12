@@ -15,7 +15,7 @@ class AiMenuSeeder extends Seeder
             ['nama' => 'Cappuccino', 'kategori' => 'minuman', 'harga' => 15000, 'file' => 'cappuccino_with_latte_art_2.webp'],
             ['nama' => 'Nasi Goreng Ayam', 'kategori' => 'makanan', 'harga' => 25000, 'file' => 'chicken_fried_rice_with_sunny_side_up_egg_and_crackers_12.webp'],
             ['nama' => 'Soto Ayam', 'kategori' => 'makanan', 'harga' => 20000, 'file' => 'chicken_soup_with_shredded_chicken__noodles_and_boiled_egg_8.webp'],
-            ['nama' => 'Pisang Goreng Cokelat Keju', 'kategori' => 'snack', 'harga' => 15000, 'file' => 'crispy_fried_bananas_with_chocolate_and_grated_cheese_6.webp'],
+            ['nama' => 'Pisang Goreng Cokelat Keju', 'kategori' => 'makanan', 'harga' => 15000, 'file' => 'crispy_fried_bananas_with_chocolate_and_grated_cheese_6.webp'],
             ['nama' => 'Es Campur', 'kategori' => 'minuman', 'harga' => 18000, 'file' => 'es_campur_2.webp'],
             ['nama' => 'Gado-Gado', 'kategori' => 'makanan', 'harga' => 18000, 'file' => 'gado_gado_5.webp'],
             ['nama' => 'Sate Ayam', 'kategori' => 'makanan', 'harga' => 30000, 'file' => 'grilled_chicken_satay_with_peanut_sauce_and_rice_cakes_11.webp'],
@@ -28,8 +28,8 @@ class AiMenuSeeder extends Seeder
             ['nama' => 'Mie Goreng Ayam', 'kategori' => 'makanan', 'harga' => 22000, 'file' => 'mie_goreng_with_chicken__egg_and_vegetables_9.webp'],
             ['nama' => 'Nasi Ayam Kremes', 'kategori' => 'makanan', 'harga' => 26000, 'file' => 'nasi_ayam_kremes_8.webp'],
             ['nama' => 'Rendang Sapi', 'kategori' => 'makanan', 'harga' => 35000, 'file' => 'rendang_sapi_7.webp'],
-            ['nama' => 'Tahu Crispy', 'kategori' => 'snack', 'harga' => 12000, 'file' => 'tahu_crispy_4.webp'],
-            ['nama' => 'Tempe Mendoan', 'kategori' => 'snack', 'harga' => 12000, 'file' => 'tempe_mendoan_3.webp'],
+            ['nama' => 'Tahu Crispy', 'kategori' => 'makanan', 'harga' => 12000, 'file' => 'tahu_crispy_4.webp'],
+            ['nama' => 'Tempe Mendoan', 'kategori' => 'makanan', 'harga' => 12000, 'file' => 'tempe_mendoan_3.webp'],
         ];
 
         // Replace existing product rows so old demo products are not shown.
