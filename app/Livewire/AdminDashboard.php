@@ -247,13 +247,8 @@ class AdminDashboard extends Component
             }
         }
         
-        // Menu Stok Rendah - Produk dengan stok < 10
-        $lowStockProducts = Product::where('stok', '<', 10)
-            ->where('stok', '>', 0)
-            ->orderBy('stok', 'asc')
-            ->limit(5)
-            ->get();
-        $lowStockCount = Product::where('stok', '<', 10)->where('stok', '>', 0)->count();
+        // ponytail: low-stock query dihapus - kolom 'stok' tidak ada & view tidak memakainya.
+        // Tambahkan kembali hanya jika kolom stok dibuat di tabel products.
 
         $staffList = User::where('role', 'staff')
             ->orderBy('created_at', 'DESC')
@@ -292,8 +287,6 @@ class AdminDashboard extends Component
             'isOpen' => $isOpen,
             'operationalStatus' => $operationalStatus,
             'operationalTime' => $operationalTime,
-            'lowStockProducts' => $lowStockProducts,
-            'lowStockCount' => $lowStockCount,
         ])->layout('components.layouts.app');
     }
 
