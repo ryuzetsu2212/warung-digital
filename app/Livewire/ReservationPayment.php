@@ -80,18 +80,35 @@ public function mount(Reservation $reservation)
         // ✅ Generate secure random filename
         $extension = $this->paymentProof->getClientOriginalExtension();
         $randomName = 'proof_' . $this->reservation->id . '_' . Str::random(32) . '.' . strtolower($extension);
-        
-        // ✅ Store with proper permissions
-        $path = $this->paymentProof->storeAs('payment_proofs', $randomName, 'public');
 
-        // ✅ Verify file was saved
-        if (!$path) {
-            $this->addError('paymentProof', 'Gagal menyimpan file. Silakan coba lagi.');
+        // ✅ Upload to Supabase Storage (persistent, public bucket)
+        $client = new \GuzzleHttp\Client();
+        $supabaseUrl = env('SUPABASE_PROJECT_URL');
+        $supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY');
+        if (!$supabaseUrl || !$supabaseKey) {
+            $this->addError('paymentProof', 'Konfigurasi server belum lengkap.');
+            return;
+        }
+
+        try {
+            $response = $client->request('POST', "$supabaseUrl/storage/v1/object/payment-proofs/{$randomName}", [
+                'headers' => [
+                    'Authorization' => "Bearer {$supabaseKey}",
+                    'apikey' => $supabaseKey,
+                ],
+                'body' => fopen($this->paymentProof->getRealPath(), 'r'),
+            ]);
+            $status = json_decode((string) $response->getBody(), true);
+            if (!isset($status['Key']) && $response->getStatusCode() !== 200 && $response->getStatusCode() !== 204) {
+                throw new \Exception('Upload failed');
+            }
+        } catch (\Throwable $e) {
+            $this->addError('paymentProof', 'Gagal mengunggah file: ' . $e->getMessage());
             return;
         }
 
         $this->reservation->update([
-            'payment_proof' => $path,
+            'payment_proof' => "https://pbaqettpfiqpxsccuiox.supabase.co/storage/v1/object/public/payment-proofs/{$randomName}",
             'payment_status' => 'dp_pending',
             'payment_time' => now(),
         ]);

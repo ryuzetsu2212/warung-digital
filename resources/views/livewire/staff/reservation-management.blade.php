@@ -503,10 +503,12 @@
                                      @if($selectedReservation->payment_proof)
                                          <div class="pt-2 border-t border-slate-700">
                                              <span class="text-[9px] text-slate-400 block mb-1.5">📸 Bukti Pembayaran</span>
-                                             <a href="{{ asset('storage/' . $selectedReservation->payment_proof) }}" target="_blank"
-                                                class="block w-full">
-                                                 <img src="{{ asset('storage/' . $selectedReservation->payment_proof) }}" 
-                                                      alt="Bukti Pembayaran" 
+                                             @php $url = str_contains($selectedReservation->payment_proof, 'supabase.co')
+                                                 ? $selectedReservation->payment_proof
+                                                 : asset('storage/' . $selectedReservation->payment_proof); @endphp
+                                             <a href="{{ $url }}" target="_blank" class="block w-full">
+                                                 <img src="{{ $url }}"
+                                                      alt="Bukti Pembayaran"
                                                       class="w-full h-auto rounded-lg border-2 border-slate-700 hover:border-indigo-500 transition cursor-pointer">
                                              </a>
                                          </div>
