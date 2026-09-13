@@ -477,26 +477,58 @@
                                       </div>
 
                                       <!-- Payment Action Buttons -->
-                                      <div class="flex flex-wrap gap-2 mt-2">
+                                      <div x-data="{ pending: null }" class="flex flex-wrap gap-2 mt-2">
                                           @if($selectedReservation->payment_status == 'dp_pending')
-                                              <button wire:click="confirmDpPayment({{ $selectedReservation->id }})"
-                                                      class="flex-1 min-w-[100px] bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-lg transition font-bold shadow-lg hover:shadow-xl flex items-center justify-center gap-1 text-xs"
-                                                      wire:confirm="Konfirmasi pembayaran DP 50%? Reservasi akan segera diaktifkan.">
+                                              <button @click="pending = 'dp'"
+                                                      class="flex-1 min-w-[100px] bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-lg transition font-bold shadow-lg hover:shadow-xl flex items-center justify-center gap-1 text-xs cursor-pointer">
                                                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                   </svg>
                                                   Konfirmasi DP
                                               </button>
                                           @elseif($selectedReservation->payment_status == 'dp_paid')
-                                              <button wire:click="updatePaymentStatus({{ $selectedReservation->id }}, 'paid')"
-                                                      class="flex-1 min-w-[100px] bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg transition font-bold shadow-lg hover:shadow-xl flex items-center justify-center gap-1 text-xs"
-                                                      wire:confirm="Apakah Anda yakin ingin menandai reservasi ini sebagai Lunas?">
+                                              <button @click="pending = 'lunas'"
+                                                      class="flex-1 min-w-[100px] bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg transition font-bold shadow-lg hover:shadow-xl flex items-center justify-center gap-1 text-xs cursor-pointer">
                                                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                   </svg>
                                                   Lunas
                                               </button>
                                           @endif
+
+                                          <!-- Pretty confirm modal (Alpine, bundled with Livewire 3) -->
+                                          <div x-cloak x-show="pending" x-transition.opacity.duration.200ms
+                                               class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4"
+                                               @keydown.escape.window="pending = null">
+                                              <div @click.outside="pending = null" x-show="pending" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                                                   class="w-full max-w-sm bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+                                                  <div class="p-5 text-center">
+                                                      <div class="mx-auto mb-3 w-12 h-12 rounded-full flex items-center justify-center"
+                                                           :class="pending === 'dp' ? 'bg-green-500/15 text-green-400' : 'bg-emerald-500/15 text-emerald-400'">
+                                                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+                                                          </svg>
+                                                      </div>
+                                                      <h3 class="text-white font-bold text-sm mb-1.5" x-text="pending === 'dp' ? 'Konfirmasi Pembayaran DP' : 'Tandai Lunas'"></h3>
+                                                      <p class="text-slate-400 text-xs leading-relaxed"
+                                                         x-text="pending === 'dp'
+                                                             ? 'Pembayaran DP 50% akan dikonfirmasi dan reservasi langsung diaktifkan. Lanjutkan?'
+                                                             : 'Reservasi akan ditandai sebagai Lunas (pembayaran penuh). Lanjutkan?'"></p>
+                                                  </div>
+                                                  <div class="flex border-t border-slate-700">
+                                                      <button @click="pending = null"
+                                                              class="flex-1 py-3 text-slate-300 hover:bg-slate-700/60 text-xs font-bold transition cursor-pointer">Batal</button>
+                                                      <button x-show="pending === 'dp'"
+                                                              @click="$wire.confirmDpPayment({{ $selectedReservation->id }}); pending = null"
+                                                              wire:loading.attr="disabled"
+                                                              class="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition disabled:opacity-50 cursor-pointer">Ya, Konfirmasi DP</button>
+                                                      <button x-show="pending === 'lunas'"
+                                                              @click="$wire.updatePaymentStatus({{ $selectedReservation->id }}, 'paid'); pending = null"
+                                                              wire:loading.attr="disabled"
+                                                              class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition disabled:opacity-50 cursor-pointer">Ya, Tandai Lunas</button>
+                                                  </div>
+                                              </div>
+                                          </div>
                                       </div>
 
                                      <!-- Bukti Pembayaran -->
