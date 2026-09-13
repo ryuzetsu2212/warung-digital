@@ -104,7 +104,7 @@ class ReservationForm extends Component
 
     private function suggestAlternativeTables($reservationDateTime)
     {
-        $allTables = Table::all();
+        $allTables = Table::orderByRaw('CAST(nomor_meja AS INTEGER) ASC')->get();
         $this->availableTables = [];
 
         foreach ($allTables as $table) {
@@ -186,7 +186,7 @@ class ReservationForm extends Component
 
     public function render()
     {
-        $tables = Table::all();
+        $tables = Table::orderByRaw('CAST(nomor_meja AS INTEGER) ASC')->get();
         return view('livewire.reservation-form', compact('tables'));
     }
 }

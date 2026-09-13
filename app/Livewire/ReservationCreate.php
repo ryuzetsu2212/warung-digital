@@ -342,7 +342,7 @@ class ReservationCreate extends Component
     public function render()
     {
         // Get all tables and mark which ones are occupied
-        $tables = Table::all()->map(function ($table) {
+        $tables = Table::orderByRaw('CAST(nomor_meja AS INTEGER) ASC')->get()->map(function ($table) {
             $table->is_occupied = $table->status_meja === 'terisi';
             return $table;
         });
