@@ -49,15 +49,15 @@ class DemoCustomerReservationSeeder extends Seeder
                         'customer_name' => $user->name,
                         'phone_number' => $user->phone,
                         'number_of_guests' => 2 + $i,
-                        'status' => $i === 0 ? 'confirmed' : 'pending',
+                        'status' => 'completed',
                         'reservation_end_time' => sprintf('%02d:00:00', 12 + $i),
-                        'reserved_until' => $i === 0 ? $date->copy()->setTime(11 + $i, 0)->addHours(3) : null,
+                        'reserved_until' => $date->copy()->setTime(11 + $i, 0)->addHours(3),
                         'notes' => 'Data dummy untuk pengujian.',
                         'total_amount' => 50000 + ($i * 10000),
                         'dp_amount' => 25000 + ($i * 5000),
-                        'payment_status' => $i === 0 ? 'paid' : 'pending',
+                        'payment_status' => 'paid',
                         'payment_type' => $i % 2 === 0 ? 'qris' : 'transfer',
-                        'payment_time' => $i === 0 ? now() : null,
+                        'payment_time' => now(),
                     ]
                 );
 
