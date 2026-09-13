@@ -77,12 +77,34 @@ public function mount(Reservation $reservation)
             return;
         }
 
-        // ✅ Generate secure random filename
-        $extension = $this->paymentProof->getClientOriginalExtension();
-        $randomName = 'proof_' . $this->reservation->id . '_' . Str::random(32) . '.' . strtolower($extension);
+        // ✅ Generate secure random filename with WebP conversion
+        $randomName = 'proof_' . $this->reservation->id . '_' . Str::random(32) . '.webp';
+
+        // ✅ Convert to WebP for smaller file size
+        $tempPath = sys_get_temp_dir() . '/proof_' . Str::random(16) . '.webp';
+        try {
+            $img = null;
+            switch ($mimeType) {
+                case 'image/jpeg':
+                    $img = imagecreatefromjpeg($this->paymentProof->getRealPath());
+                    break;
+                case 'image/png':
+                    $img = imagecreatefrompng($this->paymentProof->getRealPath());
+                    break;
+            }
+            if ($img === null) {
+                throw new \Exception('Gagal decode gambar.');
+            }
+            imagewebp($img, $tempPath, 85);
+            imagedestroy($img);
+        } catch (\Throwable $e) {
+            @unlink($tempPath);
+            $this->addError('paymentProof', 'Gagal memproses gambar: ' . $e->getMessage());
+            return;
+        }
 
         // ✅ Upload to Supabase Storage (persistent, public bucket)
-        $client = new \GuzzleHttp\Client();
+        $client = new \\GuzzleHttp\\Client();
         $supabaseUrl = env('SUPABASE_PROJECT_URL');
         $supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY');
         if (!$supabaseUrl || !$supabaseKey) {
@@ -96,16 +118,18 @@ public function mount(Reservation $reservation)
                     'Authorization' => "Bearer {$supabaseKey}",
                     'apikey' => $supabaseKey,
                 ],
-                'body' => fopen($this->paymentProof->getRealPath(), 'r'),
+                'body' => fopen($tempPath, 'r'),
             ]);
             $status = json_decode((string) $response->getBody(), true);
             if (!isset($status['Key']) && $response->getStatusCode() !== 200 && $response->getStatusCode() !== 204) {
                 throw new \Exception('Upload failed');
             }
         } catch (\Throwable $e) {
+            @unlink($tempPath);
             $this->addError('paymentProof', 'Gagal mengunggah file: ' . $e->getMessage());
             return;
         }
+        @unlink($tempPath);
 
         $this->reservation->update([
             'payment_proof' => "https://pbaqettpfiqpxsccuiox.supabase.co/storage/v1/object/public/payment-proofs/{$randomName}",
