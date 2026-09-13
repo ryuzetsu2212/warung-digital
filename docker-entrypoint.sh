@@ -23,8 +23,9 @@ export SESSION_DRIVER="file"
 export CACHE_STORE="file"
 export QUEUE_CONNECTION="sync"
 
-# public/storage is gitignored, so the symlink must be created at runtime,
-# otherwise uploaded files (payment proofs) 404 on /storage/...
+# public/storage is gitignored, but a dangling symlink may be copied into the
+# image, which makes storage:link fail and uploaded files 404 on /storage/...
+rm -f public/storage
 php artisan storage:link || true
 
 # Never reuse a config cache created with the old/invalid key.
