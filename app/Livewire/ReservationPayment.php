@@ -104,7 +104,7 @@ public function mount(Reservation $reservation)
         }
 
         // ✅ Upload to Supabase Storage (persistent, public bucket)
-        $client = new \\GuzzleHttp\\Client();
+        $client = new \GuzzleHttp\Client();
         $supabaseUrl = env('SUPABASE_PROJECT_URL');
         $supabaseKey = env('SUPABASE_SERVICE_ROLE_KEY');
         if (!$supabaseUrl || !$supabaseKey) {
