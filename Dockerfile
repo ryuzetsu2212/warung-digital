@@ -30,5 +30,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENV PORT=8080
+# opcache utk php artisan serve (built-in server, enable_cli needed)
+RUN echo "opcache.enable_cli=1" > /usr/local/etc/php/conf.d/opcache.ini
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
