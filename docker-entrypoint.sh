@@ -31,7 +31,15 @@ php artisan storage:link || true
 # Never reuse a config cache created with the old/invalid key.
 php artisan config:clear
 php artisan migrate --force
-php artisan db:seed --class=AdminUserSeeder --force
+# Seed admin/staff accounts only when none exist — otherwise this would
+# silently reset the admin password back to the seeder default on every deploy.
+ADMIN_COUNT="$(php artisan tinker --execute="echo \App\Models\User::whereIn('role',['admin','staff'])->count();" 2>/dev/null | tr -d '[:space:]')"
+if [ -z "$ADMIN_COUNT" ] || [ "$ADMIN_COUNT" = "0" ]; then
+    echo "No admin/staff users; seeding default accounts..."
+    php artisan db:seed --class=AdminUserSeeder --force
+else
+    echo "Admin/staff users exist ($ADMIN_COUNT); skipping (jangan timpa password)."
+fi
 
 # Seed the initial menu only when products is empty.
 PRODUCT_COUNT="$(php artisan tinker --execute="echo \\App\\Models\\Product::count();" 2>/dev/null | tr -d '[:space:]')"
