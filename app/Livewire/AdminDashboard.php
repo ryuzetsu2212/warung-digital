@@ -393,65 +393,48 @@ class AdminDashboard extends Component
                 $orderData[] = $hourlyOrderRevenue[$hour] ?? 0;
                 $reservationData[] = $hourlyReservationRevenue[$hour] ?? 0;
             }
-        } elseif ($period === 'week') {
-            for ($i = 0; $i < 7; $i++) {
+        } elseif ($period === 'week' || $period === 'month') {
+            // Grouping query sekali per sumber (bukan 2 query per hari/periode)
+            // MySQL: DATE(created_at)  | PostgreSQL: DATE(created_at) juga bekerja
+            $orderRows = Order::where('status', 'selesai')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->select(DB::raw('DATE(created_at) as d, SUM(total_harga) as rev'))
+                ->groupByRaw('DATE(created_at)')
+                ->get()
+                ->keyBy('d');
+            $resRows = Reservation::where('status', 'completed')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->select(DB::raw('DATE(created_at) as d, SUM(total_amount) as rev'))
+                ->groupByRaw('DATE(created_at)')
+                ->get()
+                ->keyBy('d');
+            $days = ($period === 'week') ? 7 : $startDate->daysInMonth;
+            for ($i = 0; $i < $days; $i++) {
                 $date = $startDate->copy()->addDays($i);
-                $labels[] = $date->format('D');
-                
-                $dayStart = $date->copy()->startOfDay();
-                $dayEnd = $date->copy()->endOfDay();
-                
-                $orderRevenue = Order::where('status', 'selesai')
-                    ->whereBetween('created_at', [$dayStart, $dayEnd])
-                    ->get()
-                    ->sum('total_harga');
-                
-                $reservationRevenue = Reservation::where('status', 'completed')
-                    ->whereBetween('created_at', [$dayStart, $dayEnd])
-                    ->sum('total_amount');
-                
-                $orderData[] = $orderRevenue;
-                $reservationData[] = $reservationRevenue;
-            }
-        } elseif ($period === 'month') {
-            $daysInMonth = $startDate->daysInMonth;
-            for ($day = 1; $day <= $daysInMonth; $day++) {
-                $labels[] = $day;
-                
-                $dayStart = $startDate->copy()->day($day)->startOfDay();
-                $dayEnd = $startDate->copy()->day($day)->endOfDay();
-                
-                $orderRevenue = Order::where('status', 'selesai')
-                    ->whereBetween('created_at', [$dayStart, $dayEnd])
-                    ->get()
-                    ->sum('total_harga');
-                
-                $reservationRevenue = Reservation::where('status', 'completed')
-                    ->whereBetween('created_at', [$dayStart, $dayEnd])
-                    ->sum('total_amount');
-                
-                $orderData[] = $orderRevenue;
-                $reservationData[] = $reservationRevenue;
+                $labels[] = ($period === 'week') ? $date->format('D') : $date->day;
+                $d = $date->format('Y-m-d');
+                $orderData[] = (float) ($orderRows[$d]->rev ?? 0);
+                $reservationData[] = (float) ($resRows[$d]->rev ?? 0);
             }
         } elseif ($period === 'year') {
             $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            $orderRows = Order::where('status', 'selesai')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->select(DB::raw('DATE_FORMAT(created_at, \'%Y-%m\') as m, SUM(total_harga) as rev'))
+                ->groupByRaw('DATE_FORMAT(created_at, \'%Y-%m\')')
+                ->get()
+                ->keyBy('m');
+            $resRows = Reservation::where('status', 'completed')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->select(DB::raw('DATE_FORMAT(created_at, \'%Y-%m\') as m, SUM(total_amount) as rev'))
+                ->groupByRaw('DATE_FORMAT(created_at, \'%Y-%m\')')
+                ->get()
+                ->keyBy('m');
             for ($month = 1; $month <= 12; $month++) {
                 $labels[] = $months[$month - 1];
-                
-                $monthStart = Carbon::create($startDate->year, $month, 1)->startOfMonth();
-                $monthEnd = $monthStart->copy()->endOfMonth();
-                
-                $orderRevenue = Order::where('status', 'selesai')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
-                    ->get()
-                    ->sum('total_harga');
-                
-                $reservationRevenue = Reservation::where('status', 'completed')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
-                    ->sum('total_amount');
-                
-                $orderData[] = $orderRevenue;
-                $reservationData[] = $reservationRevenue;
+                $m = Carbon::create($startDate->year, $month, 1)->format('Y-m');
+                $orderData[] = (float) ($orderRows[$m]->rev ?? 0);
+                $reservationData[] = (float) ($resRows[$m]->rev ?? 0);
             }
         }
 
@@ -469,25 +452,18 @@ class AdminDashboard extends Component
             $endDate = Carbon::today()->endOfDay();
         }
 
-        $topItems = OrderItem::with('product')
-            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+        $topItems = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
             ->where('orders.status', 'selesai')
             ->whereBetween('orders.created_at', [$startDate, $endDate])
-            ->select('order_items.product_id', DB::raw('SUM(order_items.qty) as total_quantity'))
-            ->groupBy('order_items.product_id')
+            ->select('order_items.product_id', 'products.nama', DB::raw('SUM(order_items.qty) as total_quantity'))
+            ->groupBy('order_items.product_id', 'products.nama')
             ->orderBy('total_quantity', 'DESC')
             ->limit(5)
             ->get();
 
-        $labels = [];
-        $data = [];
-        foreach ($topItems as $item) {
-            $product = Product::find($item->product_id);
-            if ($product) {
-                $labels[] = $product->nama;
-                $data[] = $item->total_quantity;
-            }
-        }
+        $labels = $topItems->pluck('nama')->all();
+        $data = $topItems->pluck('total_quantity')->all();
 
         return ['labels' => $labels, 'data' => $data];
     }
