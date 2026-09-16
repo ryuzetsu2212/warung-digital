@@ -430,14 +430,14 @@ class AdminDashboard extends Component
                 ->where('orders.status', 'selesai')
                 ->whereNot('order_items.status_item', 'dibatalkan')
                 ->whereBetween('orders.created_at', [$startDate, $endDate])
-                ->select(DB::raw('DATE_FORMAT(orders.created_at, \'%Y-%m\') as m, SUM(products.harga * order_items.qty) as rev'))
-                ->groupByRaw('DATE_FORMAT(orders.created_at, \'%Y-%m\')')
+                ->select(DB::raw('TO_CHAR(orders.created_at, \'YYYY-MM\') as m, SUM(products.harga * order_items.qty) as rev'))
+                ->groupByRaw('TO_CHAR(orders.created_at, \'YYYY-MM\')')
                 ->get()
                 ->keyBy('m');
             $resRows = Reservation::where('status', 'completed')
                 ->whereBetween('created_at', [$startDate, $endDate])
-                ->select(DB::raw('DATE_FORMAT(created_at, \'%Y-%m\') as m, SUM(total_amount) as rev'))
-                ->groupByRaw('DATE_FORMAT(created_at, \'%Y-%m\')')
+                ->select(DB::raw('TO_CHAR(created_at, \'YYYY-MM\') as m, SUM(total_amount) as rev'))
+                ->groupByRaw('TO_CHAR(created_at, \'YYYY-MM\')')
                 ->get()
                 ->keyBy('m');
             for ($month = 1; $month <= 12; $month++) {
