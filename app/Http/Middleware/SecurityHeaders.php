@@ -37,7 +37,9 @@ class SecurityHeaders
         // ✅ Content Security Policy (relaxed for Livewire & Tailwind)
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline'",
+            // ⚠ JANGAN hapus 'unsafe-eval' — Livewire/Alpine.js memakai new Function()
+            // untuk evaluasi wire: expression. Dihapus → login submit diam-diam mati.
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com data:",
             "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://pbaqettpfiqpxsccuiox.supabase.co",
