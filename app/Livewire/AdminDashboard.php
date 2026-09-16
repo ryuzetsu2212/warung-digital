@@ -323,10 +323,9 @@ class AdminDashboard extends Component
         if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
-        $orders = $query->get();
+        $totalOrders = $query->count();
 
         $totalRevenue = $this->getCombinedRevenue($startDate, $endDate);
-        $totalOrders = $orders->count();
 
         return [
             'totalRevenue' => $totalRevenue,
@@ -358,10 +357,13 @@ class AdminDashboard extends Component
         ]);
 
         if ($period === 'today') {
-            // Per jam - load semua orders untuk hari ini
-            $todayOrders = Order::where('status', 'selesai')
-                ->whereDate('created_at', $startDate->format('Y-m-d'))
-                ->with('orderItems.product')
+            // total_harga = accessor (sum order_items); muat 1 query join
+            $todayOrders = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.product_id', '=', 'products.id')
+                ->where('orders.status', 'selesai')
+                ->whereNot('order_items.status_item', 'dibatalkan')
+                ->whereDate('orders.created_at', $startDate->format('Y-m-d'))
+                ->select('orders.id', DB::raw('products.harga * order_items.qty as line_total'), 'orders.created_at')
                 ->get();
 
             $todayReservations = Reservation::where('status', 'completed')
@@ -370,12 +372,12 @@ class AdminDashboard extends Component
 
             // Group by hour menggunakan Carbon
             $hourlyOrderRevenue = [];
-            foreach ($todayOrders as $order) {
-                $hour = (int) $order->created_at->format('G');
+            foreach ($todayOrders as $line) {
+                $hour = (int) $line->created_at->format('G');
                 if (!isset($hourlyOrderRevenue[$hour])) {
                     $hourlyOrderRevenue[$hour] = 0;
                 }
-                $hourlyOrderRevenue[$hour] += $order->total_harga;
+                $hourlyOrderRevenue[$hour] += $line->line_total;
             }
 
             $hourlyReservationRevenue = [];
@@ -394,20 +396,25 @@ class AdminDashboard extends Component
                 $reservationData[] = $hourlyReservationRevenue[$hour] ?? 0;
             }
         } elseif ($period === 'week' || $period === 'month') {
-            // Grouping query sekali per sumber (bukan 2 query per hari/periode)
-            // MySQL: DATE(created_at)  | PostgreSQL: DATE(created_at) juga bekerja
-            $orderRows = Order::where('status', 'selesai')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->select(DB::raw('DATE(created_at) as d, SUM(total_harga) as rev'))
-                ->groupByRaw('DATE(created_at)')
+            // 1 grouping query per sumber. total_harga bukan kolom, jadi dihitung
+            // lewat join order_items+products lalu dijumlah per tanggal order.
+            $orderRows = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.product_id', '=', 'products.id')
+                ->where('orders.status', 'selesai')
+                ->whereNot('order_items.status_item', 'dibatalkan')
+                ->whereBetween('orders.created_at', [$startDate, $endDate])
+                ->select(DB::raw('DATE(orders.created_at) as d, SUM(products.harga * order_items.qty) as rev'))
+                ->groupByRaw('DATE(orders.created_at)')
                 ->get()
                 ->keyBy('d');
+
             $resRows = Reservation::where('status', 'completed')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->select(DB::raw('DATE(created_at) as d, SUM(total_amount) as rev'))
                 ->groupByRaw('DATE(created_at)')
                 ->get()
                 ->keyBy('d');
+
             $days = ($period === 'week') ? 7 : $startDate->daysInMonth;
             for ($i = 0; $i < $days; $i++) {
                 $date = $startDate->copy()->addDays($i);
@@ -418,10 +425,13 @@ class AdminDashboard extends Component
             }
         } elseif ($period === 'year') {
             $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            $orderRows = Order::where('status', 'selesai')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->select(DB::raw('DATE_FORMAT(created_at, \'%Y-%m\') as m, SUM(total_harga) as rev'))
-                ->groupByRaw('DATE_FORMAT(created_at, \'%Y-%m\')')
+            $orderRows = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.product_id', '=', 'products.id')
+                ->where('orders.status', 'selesai')
+                ->whereNot('order_items.status_item', 'dibatalkan')
+                ->whereBetween('orders.created_at', [$startDate, $endDate])
+                ->select(DB::raw('DATE_FORMAT(orders.created_at, \'%Y-%m\') as m, SUM(products.harga * order_items.qty) as rev'))
+                ->groupByRaw('DATE_FORMAT(orders.created_at, \'%Y-%m\')')
                 ->get()
                 ->keyBy('m');
             $resRows = Reservation::where('status', 'completed')
@@ -499,15 +509,19 @@ class AdminDashboard extends Component
 
     private function getCombinedRevenue($startDate, $endDate)
     {
-        $orderRevenue = Order::where('status', 'selesai')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get()
-            ->sum('total_harga');
-        
+        // total_harga adalah accessor (sum order_items), bukan kolom orders.
+        // Hitung dalam satu join + group by per order.
+        $orderRevenue = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('orders.status', 'selesai')
+            ->whereNot('order_items.status_item', 'dibatalkan')
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->sum(DB::raw('products.harga * order_items.qty'));
+
         $reservationRevenue = Reservation::where('status', 'completed')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->sum('total_amount');
-        
+
         return $orderRevenue + $reservationRevenue;
     }
     public function exportPdf()
