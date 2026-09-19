@@ -97,9 +97,11 @@
                         </h2>
                         @if(!$makananItems->isEmpty())
                             <div class="flex items-center gap-2">
-                                <button wire:click="processAllCategory('makanan')" class="bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition shadow">
-                                    ⚡ Proses Semua
-                                </button>
+                                @if($makananItems->contains('status_item', 'menunggu'))
+                                    <button wire:click="processAllCategory('makanan')" class="bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition shadow">
+                                        ⚡ Proses Semua
+                                    </button>
+                                @endif
                                 <button wire:click="completeAllCategory('makanan')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition shadow">
                                     ✅ Selesaikan Semua
                                 </button>
@@ -166,9 +168,11 @@
                         </h2>
                         @if(!$minumanItems->isEmpty())
                             <div class="flex items-center gap-2">
-                                <button wire:click="processAllCategory('minuman')" class="bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition shadow">
-                                    ⚡ Proses Semua
-                                </button>
+                                @if($minumanItems->contains('status_item', 'menunggu'))
+                                    <button wire:click="processAllCategory('minuman')" class="bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition shadow">
+                                        ⚡ Proses Semua
+                                    </button>
+                                @endif
                                 <button wire:click="completeAllCategory('minuman')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition shadow">
                                     ✅ Selesaikan Semua
                                 </button>
