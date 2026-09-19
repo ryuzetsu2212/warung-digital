@@ -35,8 +35,8 @@ class OrderStatus extends Component
             $this->review = $orderModel->review;
         }
 
-        // Redirect to payment page if order is complete but not paid
-        if ($orderModel->status === 'selesai' && $orderModel->status_pembayaran === 'belum_bayar') {
+        // Redirect to payment page if order is complete
+        if ($orderModel->status === 'selesai' && in_array($orderModel->status_pembayaran, ['belum_bayar', 'menunggu_konfirmasi', 'lunas'])) {
             return $this->redirect(route('customer.payment', $this->orderId), navigate: false);
         }
     }
@@ -93,8 +93,9 @@ class OrderStatus extends Component
             abort(404, 'Order not found');
         }
 
-        // Redirect to payment page if order is complete but not paid or waiting for confirmation
-        if ($order->status === 'selesai' && in_array($order->status_pembayaran, ['belum_bayar', 'menunggu_konfirmasi'])) {
+        // Redirect ke halaman pembayaran jika pesanan selesai
+        // Tetap redirect saat 'lunas' agar pelanggan bisa melihat & mengunduh struk
+        if ($order->status === 'selesai' && in_array($order->status_pembayaran, ['belum_bayar', 'menunggu_konfirmasi', 'lunas'])) {
             $this->redirect(route('customer.payment', $this->orderId), navigate: false);
             return view('livewire.order-status', [
                 'order' => $order
